@@ -11,27 +11,53 @@ namespace Sanford_MIDI
     public partial class Form1 : Form
     {
         InputDevice midiIn;
+        
         List<int> keysPressed = new List<int>();
         List<int[]> notesPlayed = new List<int[]>();
+        int mouseNote;
         public Form1()
         {
             InitializeComponent();
         }
-
         private void pianoControl2_PianoKeyDown(object sender, Sanford.Multimedia.Midi.UI.PianoKeyEventArgs e)
         {
-            int noteID = e.NoteID;
-            int timestamp = Environment.TickCount;
-
-            notesPlayed.Add(new int[2] { noteID, timestamp });
+            if (checkBox1.Checked)
+            {
+                int noteID = e.NoteID;
+                int timestamp = Environment.TickCount;
+                Console.WriteLine(timestamp);
+                notesPlayed.Add(new int[2] { noteID, timestamp });
+                toolStripStatusLabel1.Text = $"{noteID}";
+            }
         }
         private void pianoControl2_PianoKeyUp(object sender, Sanford.Multimedia.Midi.UI.PianoKeyEventArgs e)
         {
-            int noteID = e.NoteID;
+            if (checkBox1.Checked)
+            {
+                int noteID = e.NoteID;
+                int timestamp = Environment.TickCount;
+                //Sets the length of the note. 
+                notesPlayed.FindLast(note => note[0] == noteID)[1] = timestamp - notesPlayed.FindLast(note => note[0] == noteID)[1];
+            }
+        }
+
+        private void pianoControl2_MouseDown(object sender, MouseEventArgs e)
+        {
+            int noteID = mouseNote;
+            int timestamp = Environment.TickCount;
+            Console.WriteLine(timestamp);
+            notesPlayed.Add(new int[2] { noteID, timestamp });
+            toolStripStatusLabel1.Text = $"{noteID}";
+
+        }
+        private void pianoControl2_MouseUp(object sender, MouseEventArgs e)
+        {
+            int noteID = mouseNote;
             int timestamp = Environment.TickCount;
             //Sets the length of the note. 
-            notesPlayed.FindLast(note => note[0] == noteID)[1] = timestamp - notesPlayed.Find(note => note[0] == noteID)[1];
+            notesPlayed.FindLast(note => note[0] == noteID)[1] = timestamp - notesPlayed.FindLast(note => note[0] == noteID)[1];
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -56,15 +82,16 @@ namespace Sanford_MIDI
                 keysPressed.Remove(noteID);
                 pianoControl2.ReleasePianoKey(noteID);
                 //Sets the length of the note. 
-                notesPlayed.FindLast(note => note[0] == noteID)[1] = timestamp - notesPlayed.Find(note => note[0] == noteID)[1];
+                notesPlayed.FindLast(note => note[0] == noteID)[1] = timestamp - notesPlayed.FindLast(note => note[0] == noteID)[1];
 
             }
-            foreach (int key in keysPressed)
+            if (!checkBox1.Checked)
             {
-                pianoControl2.PressPianoKey(key);
+                foreach (int key in keysPressed)
+                {
+                    pianoControl2.PressPianoKey(key);
+                }
             }
-
-
             toolStripStatusLabel1.Text = $"{noteID}, {e.Message.Data2}";
         }
 
@@ -104,7 +131,6 @@ namespace Sanford_MIDI
             midiIn.StartRecording();
         }
 
-
     }
 
     class ArduinoSong
@@ -118,7 +144,7 @@ namespace Sanford_MIDI
             List<int> lengths = new List<int>();
             foreach (int[] notePlayed in playedNotes)
             {
-                notes.Add(notePlayed[0]);
+                notes.Add(NoteIDToSound.Convert(notePlayed[0]));
                 lengths.Add(notePlayed[1]);
             }
             this.notes = notes;
