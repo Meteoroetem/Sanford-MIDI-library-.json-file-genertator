@@ -49,6 +49,7 @@
             this.pianoControl2.TabIndex = 0;
             this.pianoControl2.Text = "pianoControl2";
             this.pianoControl2.PianoKeyDown += new System.EventHandler<Sanford.Multimedia.Midi.UI.PianoKeyEventArgs>(this.pianoControl2_PianoKeyDown);
+            this.pianoControl2.PianoKeyUp += new System.EventHandler<Sanford.Multimedia.Midi.UI.PianoKeyEventArgs>(this.pianoControl2_PianoKeyUp);
             // 
             // statusStrip1
             // 
@@ -126,7 +127,6 @@
 
         #endregion
 
-        private Sanford.Multimedia.Midi.UI.PianoControl pianoControl1;
         private Sanford.Multimedia.Midi.UI.PianoControl pianoControl2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
