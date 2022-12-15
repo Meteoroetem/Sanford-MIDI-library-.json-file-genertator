@@ -73,7 +73,7 @@ namespace Sanford_MIDI
                 case 76:
                     return 659;
                 case 77:
-                    return 598;
+                    return 698;
                 case 78:
                     return 740;
                 case 79:

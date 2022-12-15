@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Sanford.Multimedia.Midi;
+using Sanford.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -99,6 +100,8 @@ namespace Sanford_MIDI
         {
             midiIn.StopRecording();
             notesPlayed.Clear();
+            Application.Exit();
+            midiIn.Dispose();
         }
 
         private static void AddText(FileStream fs, string value)
