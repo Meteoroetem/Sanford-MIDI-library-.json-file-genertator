@@ -124,7 +124,7 @@ namespace Sanford_MIDI
             }
             ArduinoSong song = new ArduinoSong(notesPlayed);
 
-            string jsonString = JsonConvert.SerializeObject(song);
+            string jsonString = JsonConvert.SerializeObject(song,Formatting.Indented);
 
             using (FileStream fs = File.Create(path))
             {
